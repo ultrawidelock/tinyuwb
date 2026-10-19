@@ -23,5 +23,4 @@ Engine measured 2026-10-19 at 9,229 B flash and 813 B RAM as one translation uni
 
 ## License
 
-Not decided yet, following tinylock. No license is granted until a LICENSE
-file is added.
+Apache-2.0, see LICENSE and NOTICE.
