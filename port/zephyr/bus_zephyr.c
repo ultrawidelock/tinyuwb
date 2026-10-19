@@ -98,6 +98,12 @@ void tu_bus_delay_us(uint32_t us)
 	k_busy_wait(us);
 }
 
+int tu_bus_irq_level(void)
+{
+	pins_init();
+	return gpio_pin_get_dt(&pin_irq) > 0 ? 1 : 0;
+}
+
 void tu_bus_irq_enable(bool on)
 {
 	pins_init();

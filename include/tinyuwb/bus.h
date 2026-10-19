@@ -28,6 +28,9 @@ void tu_bus_delay_us(uint32_t us);
 /** @brief Enable or disable the IRQ line's interrupt. While disabled the line is ignored. */
 void tu_bus_irq_enable(bool on);
 
+/** The IRQ line as the pin reads now: 1 asserted, 0 idle. */
+int tu_bus_irq_level(void);
+
 /* ── Upward: what the port calls ────────────────────────────────────────── */
 
 /** @brief Service the chip's IRQ: read and clear the events, hand them to the engine. The port

@@ -58,7 +58,19 @@ static struct {
 	bool key_valid;
 	uint8_t key[16]; /* STS_KEY image as written */
 	uint32_t otp_dgc0; /* OTP word 0x20, 0 when the part carries no DGC calibration */
+	struct tu_hw_stats st;
+	uint32_t otp[5];
 } g;
+
+void tu_hw_otp_get(uint32_t out[5])
+{
+	memcpy(out, g.otp, sizeof(g.otp));
+}
+
+void tu_hw_stats_get(struct tu_hw_stats *out)
+{
+	*out = g.st;
+}
 
 /* ── SPI transactions (data sheet 4.9.4, manual 2.3.1.2) ────────────────── */
 
@@ -264,9 +276,19 @@ static int chip_init(void)
 	bias = otp_read(DW_OTP_BIASTUNE);
 	xtal = otp_read(DW_OTP_XTAL_TRIM);
 	g.otp_dgc0 = otp_read(DW_OTP_DGC_CFG0);
+	g.otp[0] = ldo_lo;
+	g.otp[1] = ldo_hi;
+	g.otp[2] = bias;
+	g.otp[3] = xtal;
+	g.otp[4] = g.otp_dgc0;
 	if ((ldo_lo | ldo_hi) != 0u || bias != 0u) {
 		otp_kick((uint16_t)(((ldo_lo | ldo_hi) != 0u ? (1u << 7) : 0u) |
 				    (bias != 0u ? (1u << 8) : 0u)));
+	}
+	/* Manual 8.2.10.2: a non-zero OTP 0x35 is the PLL calibration's starting code. */
+	uint32_t pll_code = otp_read(DW_OTP_PLL_CODE);
+	if (pll_code != 0u) {
+		wr32(0x09, 0x04, pll_code);
 	}
 	/* XTAL_TRIM is 6 bits in 8.2.10.4 while the OTP field is 7 (table 17); the OTP width is
 	 * kept so a calibrated part is never detuned by truncation (REVIEW). */
@@ -286,6 +308,8 @@ static const uint32_t k_dgc_lut_ch9[7] = {0x0002A8FEu, 0x0002AC36u, 0x0002A5FEu,
 static int phy_configure(uint8_t channel, uint8_t code)
 {
 	const bool ch9 = (channel == 9u);
+	uint16_t ldo_ctrl;
+	bool cal_ok;
 
 	if (channel != 5u && channel != 9u) {
 		return -EINVAL;
@@ -294,6 +318,8 @@ static int phy_configure(uint8_t channel, uint8_t code)
 
 	/* Channel and preamble codes (8.2.2.22): RF_CHAN bit 0, SFD_TYPE bits 2:1 = 0 for the
 	 * IEEE 802.15.4 8-symbol SFD, TX_PCODE bits 7:3, RX_PCODE bits 12:8. */
+	/* SFD_TYPE 0, the IEEE 802.15.4 short 8-symbol SFD: what the reference reader's
+	 * Pre-POLL configuration uses (4z timed out on every phone frame there). */
 	wr16(DW_CHAN_CTRL, (uint16_t)((ch9 ? 1u : 0u) | ((code & 0x1Fu) << 3) |
 				      ((code & 0x1Fu) << 8)));
 	/* Analog TX per channel (8.2.8.4, 8.2.8.5, 8.2.8.10). PG_DELAY 0x34 is inside the word. */
@@ -303,6 +329,8 @@ static int phy_configure(uint8_t channel, uint8_t code)
 	wr32(DW_TX_POWER, TU_TX_POWER);
 	/* Synthesiser per channel (table 35). */
 	wr16(DW_PLL_CFG, ch9 ? 0x0F3Cu : 0x1F3Cu);
+	/* Manual 8.2.12.3 and 8.2.12.7: load the short receiver operating parameter set. */
+	wr_and_or16(DW_OTP_CFG, (uint16_t)~0x1800u, 0x1000u | 0x0400u);
 
 	/* Receiver gain tables: the part's own OTP calibration when present (DGC_KICK with
 	 * DGC_SEL, 8.2.12.3), else the manual's defaults. RX_TUNE_EN is for 64 MHz PRF, which
@@ -323,7 +351,9 @@ static int phy_configure(uint8_t channel, uint8_t code)
 	/* Digital receiver (8.2.7): PAC 8, DT0B4 clear, SFD timeout = 64 + 1 - 8 + 8 symbols,
 	 * no preamble timeout, DTUNE3 at the recommended value. */
 	wr_and_or16(DW_DTUNE0, (uint16_t)~0x13u, 0u);
-	wr16(DW_RX_SFD_TOC, 65u);
+	/* REVIEW: 65 (64-symbol preamble + 1) timed out on every frame from a phone with the
+	 * preamble detected; the reset default of 4096 + 64 covers any preamble length. */
+	wr16(DW_RX_SFD_TOC, 4096u + 64u);
 	wr16(DW_PRE_TOC, 0u);
 	wr32(DW_DTUNE3, 0xAF5F35CCu);
 
@@ -358,19 +388,29 @@ static int phy_configure(uint8_t channel, uint8_t code)
 
 	/* Receiver calibration (8.2.5.2 to 8.2.5.5), needed once before the first RX: COMP_DLY 2,
 	 * calibration mode, CAL_EN, done flag, both results, normal mode. */
+	/* RX (PGF) calibration with the PGF LDOs on: the API guide (5.2, dwt_pgf_cal) says they
+	 * "should be enabled when running the function", the manual says only "see the API".
+	 * Without them the calibration reports success and the receiver hears nothing. The bits
+	 * are VDDMS1, VDDMS3 and VDDIF2 of LDO_CTRL (0x07:48). */
+	ldo_ctrl = rd16(0x07, 0x48);
+	wr16(0x07, 0x48, (uint16_t)(ldo_ctrl | 0x0105u));
+	tu_bus_delay_us(20u);
 	wr32(DW_RX_CAL, (2u << 16) | 1u);
 	wr_and_or32(DW_RX_CAL, 0xFFFFFFFFu, 1u << 4);
 	for (unsigned i = 0u; (rd8(DW_RX_CAL_STS) & 1u) == 0u; i++) {
 		if (i >= 100u) {
+			wr16(0x07, 0x48, ldo_ctrl);
 			return -EIO;
 		}
 		tu_bus_delay_us(20u);
 	}
-	if (rd32(DW_RX_CAL_RESI) == DW_RX_CAL_FAILED || rd32(DW_RX_CAL_RESQ) == DW_RX_CAL_FAILED) {
+	wr8(DW_RX_CAL, 0u);
+	wr8(DW_RX_CAL_STS, 1u);
+	cal_ok = rd32(DW_RX_CAL_RESI) != DW_RX_CAL_FAILED && rd32(DW_RX_CAL_RESQ) != DW_RX_CAL_FAILED;
+	wr16(0x07, 0x48, ldo_ctrl);
+	if (!cal_ok) {
 		return -EIO;
 	}
-	wr32(DW_RX_CAL, 2u << 16);
-	wr8(DW_RX_CAL_STS, 1u);
 
 	/* Interrupts: the dispatch set, nothing from the high word, slate clean. */
 	wr32(DW_SYS_ENABLE, DW_IRQ_MASK);
@@ -380,6 +420,29 @@ static int phy_configure(uint8_t channel, uint8_t code)
 }
 
 /* ── tinyuwb/hw.h ───────────────────────────────────────────────────────── */
+
+void tu_hw_rx_regs(uint32_t out[14])
+{
+	out[0] = rd16(DW_DGC_CFG);
+	out[1] = rd32(DW_DGC_CFG0);
+	out[2] = rd32(DW_DGC_CFG1);
+	for (uint8_t i = 0u; i < 7u; i++) {
+		out[3u + i] = rd32(0x03, (uint8_t)(0x38u + 4u * i));
+	}
+	out[10] = rd32(DW_RF_SWITCH);
+	out[11] = rd32(DW_SYS_CFG);
+	out[12] = rd16(DW_DTUNE0);
+	out[13] = rd16(DW_RX_SFD_TOC);
+}
+
+void tu_hw_debug(uint32_t out[5])
+{
+	out[0] = rd32(DW_SYS_STATUS);
+	out[1] = rd32(DW_SYS_STATE);
+	out[2] = rd32(DW_SYS_ENABLE);
+	out[3] = rd16(DW_CHAN_CTRL);
+	out[4] = (uint32_t)tu_bus_irq_level();
+}
 
 int tu_hw_listen_start(uint8_t channel, uint8_t code)
 {
@@ -437,6 +500,7 @@ int tu_hw_rx_enable(bool delayed, uint32_t at_hi32, uint32_t timeout)
 	} else {
 		wr_and_or8(0x00, 0x11, (uint8_t)~0x02u, 0u);
 	}
+	g.st.rx_arm++;
 	if (!delayed) {
 		fast_cmd(DW_CMD_RX);
 		return 0;
@@ -566,8 +630,11 @@ void tu_dw3000_irq(void)
 		return;
 	}
 	st = rd32(DW_SYS_STATUS);
+	g.st.irq++;
+	g.st.last_status = st;
 	if ((st & DW_ST_TXFRS) != 0u) {
 		status_clear(DW_ST_TX_ALL);
+		g.st.tx_done++;
 		tu_round_tx_done();
 	}
 	if ((st & DW_ST_RX_ALL) == 0u) {
@@ -592,21 +659,34 @@ void tu_dw3000_irq(void)
 			flags |= TU_RX_CPER;
 		}
 		status_clear(DW_ST_RX_ALL);
+		g.st.rx_ok++;
 		tu_round_rx_ok(flags, len);
 	} else if ((st & DW_ST_RX_TO) != 0u) {
 		status_clear(DW_ST_RX_ALL);
+		g.st.rx_to++;
+		g.st.e_pto += (st & DW_ST_RXPTO) != 0u;
+		g.st.e_fto += (st & DW_ST_RXFTO) != 0u;
 		tu_round_rx_ok(TU_RX_TO, 0u);
 	} else if ((st & DW_ST_RX_ERR) != 0u) {
 		uint32_t flags = TU_RX_ERR;
 		uint16_t len = 0u;
 
+		g.st.e_phe += (st & DW_ST_RXPHE) != 0u;
+		g.st.e_fce += (st & DW_ST_RXFCE) != 0u;
+		g.st.e_fsl += (st & DW_ST_RXFSL) != 0u;
+		g.st.e_sto += (st & DW_ST_RXSTO) != 0u;
+		g.st.e_arfe += (st & DW_ST_ARFE) != 0u;
+		g.st.e_cia += (st & DW_ST_CIAERR) != 0u;
 		if ((st & DW_ST_RXPHD) != 0u) {
 			flags |= TU_RX_PHD;
-			len = (uint16_t)(rd16(DW_RX_FINFO) & 0x03FFu);
+			g.st.last_finfo = rd32(DW_RX_FINFO);
+			len = (uint16_t)(g.st.last_finfo & 0x03FFu);
 		}
 		status_clear(DW_ST_RX_ALL);
+		g.st.rx_err++;
 		tu_round_rx_ok(flags, len);
 	} else {
 		status_clear(DW_ST_RX_ALL);
+		g.st.rx_other++;
 	}
 }

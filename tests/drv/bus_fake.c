@@ -285,3 +285,8 @@ unsigned bf_reads(uint8_t file, uint8_t off)
 	}
 	return n;
 }
+
+int tu_bus_irq_level(void)
+{
+	return 0;
+}

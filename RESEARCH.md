@@ -297,3 +297,32 @@ budget of 4,500 and 300. The Zephyr port (`port/zephyr/bus_zephyr.c`,
 Not in the driver, on purpose: double buffering, frame filtering, auto-ack,
 sniff, preamble timeout, PDoA, CIR and diagnostics reads, OTP programming,
 LEDs, the second SPI, SPI CRC, the AON restore path.
+
+## 9. Bring-up on the DWM3001CDK (2026-10-19)
+
+First boots with a phone: init, PLL lock and RX calibration passed, the phone's
+transaction and M1-M4 completed, but every frame the receiver saw ended in an SFD
+timeout (preamble detected, no SFD) and almost nothing was heard at 1 m. The SFD
+type (0 and 3) and the SFD timeout (65 and 4160) made no difference, and the DGC
+tables, SYS_CFG, DTUNE0 read back as intended.
+
+The initialisation steps the manual defers to "the API" were tried together and ranging
+worked on the next boot (about 5.5 ranges/s, approach unlock and relock). They were then
+bisected on the board, the same evening. The PLL coarse code (8.2.10.2) and the receiver
+operating parameter set kick (8.2.12.3, 8.2.12.7) are covered by the manual and kept with
+those citations. Every other step either changed nothing or was not needed, and was
+removed, so the driver keeps the manual's values (STS_CONF_1 stays at 8.2.13.40's). One
+step was needed and is kept: the PGF LDOs on during RX calibration.
+
+That one step is what the receiver needed: without it the calibration reports success
+and the part hears nothing. The API guide (5.2.32, `dwt_pgf_cal(int ldoen)`) states
+the requirement in words, "the PGF LDOs should be enabled when running the function";
+the LDOs are bits 0, 2 and 8 of LDO_CTRL (0x07:48: VDDMS1, VDDMS3, VDDIF2), confirmed
+on the bench.
+
+The SFD type stays 0 (IEEE 802.15.4 short).
+
+Also found on the board: the transport marked an SDU in flight after `tb_coc_send()`
+returned, which for a one-packet SDU is after its completion hook has already run, so
+the queue jammed after the first status message (fixed in tinycred's
+`port/tinyble/ble_tinyble.c`).

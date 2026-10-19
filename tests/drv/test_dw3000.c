@@ -95,7 +95,7 @@ static void t_bringup(void)
 	T_EQ("DGC_CFG THR_64 and enable", o, (0x32u << 9) | 1u);
 	T_EQ("DTUNE0 masked", bf_last_masked(DTUNE0, &a, &o), 2);
 	T_EQ("DTUNE0 PAC 8", (a & 0x13u) | o, 0u);
-	T_EQ("SFD timeout 65", bf_last_write(RX_SFD_TOC), 65u);
+	T_EQ("SFD timeout 4096 + 64", bf_last_write(RX_SFD_TOC), 4160u);
 	T_EQ("DTUNE3", bf_last_write(DTUNE3), 0xAF5F35CCu);
 	T_EQ("SYS_CFG masked", bf_last_masked(SYS_CFG, &a, &o), 3);
 	T_EQ("SYS_CFG set bits", o, (1u << 3) | (1u << 7) | (1u << 8));
@@ -106,7 +106,7 @@ static void t_bringup(void)
 	T_EQ("RX_ANTD", o, 0x4015u);
 	T_EQ("PLL_CAL", bf_last_write(PLL_CAL), 0x0181u);
 	T_EQ("SEQ_CTRL AINIT2IDLE", bf_last_masked(SEQ_CTRL, &a, &o) == 3 && o == (1u << 8), 1);
-	T_EQ("RX cal normal mode at the end", bf_last_write(RX_CAL), 2u << 16);
+	T_EQ("RX cal mode and enable cleared at the end", bf_last_write(RX_CAL), 0u);
 	T_EQ("RX cal status cleared", bf_last_write(RX_CAL_STS), 1u);
 	T_EQ("SYS_ENABLE", bf_last_write(SYS_ENABLE) & (1u << 7), 1u << 7);
 	T_EQ("CLR_IRQS", bf.cmds[CMD_CLR_IRQS], 1);

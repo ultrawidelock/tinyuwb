@@ -19,6 +19,7 @@
 #define DW_RX_FWTO      0x00, 0x34 /* 3 B, 20-bit, units of 512/499.2 MHz */
 #define DW_SYS_ENABLE   0x00, 0x3C /* 6 B */
 #define DW_SYS_STATUS   0x00, 0x44 /* 6 B, write 1 to clear */
+#define DW_SYS_STATE    0x0F, 0x30 /* 4 B RO: TX_STATE 3:0, RX_STATE 13:8, PMSC_STATE 23:16 */
 #define DW_RX_FINFO     0x00, 0x4C /* 4 B RO */
 #define DW_TX_TIME      0x00, 0x74 /* 5 B RO, antenna-adjusted 40-bit TX time */
 
@@ -38,6 +39,8 @@
 #define DW_DGC_CFG      0x03, 0x18 /* 2 B, RX_TUNE_EN bit 0, THR_64 bits 14:9 */
 #define DW_DGC_CFG0     0x03, 0x1C /* 4 B */
 #define DW_DGC_CFG1     0x03, 0x20 /* 4 B */
+#define DW_DGC_LUT0     0x03, 0x38 /* 7 x 4 B, LUT_0..LUT_6 */
+#define DW_RF_SWITCH    0x07, 0x14 /* 4 B */
 #define DW_DGC_LUT0     0x03, 0x38 /* 7 x 4 B, LUT_n at 0x38 + 4 n */
 
 /* Register file 0x04 (8.2.5): RX calibration. */

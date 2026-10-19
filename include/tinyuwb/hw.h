@@ -77,4 +77,33 @@ void tu_round_rx_ok(uint32_t flags, uint16_t len);
 /** @brief Our transmission left the antenna. */
 void tu_round_tx_done(void);
 
+/* ── Bring-up counters ──────────────────────────────────────────────────── */
+
+/** What the interrupt path saw since init: every interrupt, each outcome, and the last
+ * SYS_STATUS word read. Zero interrupts with the radio listening means the IRQ line or
+ * the chip's interrupt mask; errors without good frames mean the PHY disagrees with the
+ * peer. */
+struct tu_hw_stats {
+	uint32_t irq, tx_done, rx_ok, rx_to, rx_err, rx_other;
+	uint32_t rx_arm;       /**< tu_hw_rx_enable() calls */
+	uint32_t last_status;
+	/* Which error ended each failed reception: PHR error, FCS error, Reed-Solomon sync
+	 * loss, SFD timeout, preamble timeout, frame-wait timeout, filter rejection, CIA. */
+	uint32_t e_phe, e_fce, e_fsl, e_sto, e_pto, e_fto, e_arfe, e_cia;
+	uint32_t last_finfo;   /**< RX_FINFO of the last reception that decoded a PHR */
+};
+void tu_hw_stats_get(struct tu_hw_stats *out);
+
+/** The OTP words read at init: LDO tune low and high, bias tune, XTAL trim, DGC word 0.
+ * All zero means the read sequence returned nothing and the part runs on defaults. */
+void tu_hw_otp_get(uint32_t out[5]);
+
+/** The receiver tuning as the chip holds it after configure: DGC_CFG, DGC_CFG0, DGC_CFG1,
+ * the seven DGC LUT words, then RF_SWITCH, SYS_CFG, DTUNE0, RX_SFD_TOC. Reads only. */
+void tu_hw_rx_regs(uint32_t out[14]);
+
+/** Live registers over the bus, for a status line: SYS_STATUS, SYS_STATE, SYS_ENABLE low
+ * word, CHAN_CTRL, and the IRQ pin level (0 or 1). Reads only; nothing is cleared. */
+void tu_hw_debug(uint32_t out[5]);
+
 #endif /* TINYUWB_HW_H */
