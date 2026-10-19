@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: Apache-2.0
+
+config TINYUWB
+	bool "tinyuwb: DW3000 driver and CCC responder ranging engine"
+	depends on SPI && GPIO
+	depends on TINYPSA
+	depends on DT_HAS_TINYUWB_DW3000_ENABLED
+	help
+	  A register driver for the DW3000 family (the DW3110 in
+	  the DWM3001C) behind a 15-call radio contract, and the FiRa/CCC
+	  responder engine that ranges with a phone's digital key: Pre-POLL,
+	  POLL, Response, Final, Final_Data, DS-TWR. The chip is the
+	  tinyuwb,dw3000 node on its SPI bus. AES comes from tinypsa's backend.
+
+if TINYUWB
+
+config TINYUWB_TX_POWER
+	hex "TX_POWER register value"
+	default 0xfdfdfdfd
+	help
+	  All four stages of the transmit power register (manual 8.2.2.21).
+	  The default is the bench value for channel 9 on the DWM3001CDK;
+	  regulatory compliance needs a measured value per product.
+
+config TINYUWB_TX_ANTD
+	hex "TX antenna delay"
+	default 0x4015
+	help
+	  TX_ANTD (manual 8.2.2.19) in units of 1 / (499.2 MHz x 128), about
+	  15.65 ps. The default is the chip's reset value; calibrate per
+	  product (manual 10.3).
+
+config TINYUWB_RX_ANTD
+	hex "RX antenna delay"
+	default 0x4015
+	help
+	  RXANTD in CIA_CONF (manual 8.2.13.36), same units and caveat as
+	  TINYUWB_TX_ANTD.
+
+config TINYUWB_RANGE_BIAS_MM
+	int "Range bias added to every distance, mm"
+	default 0
+	help
+	  Bench calibration folded into the reported distance after DS-TWR.
+
+endif # TINYUWB

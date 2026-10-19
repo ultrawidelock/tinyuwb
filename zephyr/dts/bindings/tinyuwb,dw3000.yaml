@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  DW3000-family UWB transceiver on SPI, driven by tinyuwb. The three side-band
+  lines are the chip's RSTn (active low, released as an input, never driven
+  high), IRQ (active high) and WAKEUP (active high). Example for the
+  DWM3001CDK, whose &spi3 already carries CS on P1.06:
+
+    &spi3 {
+        dw3000: dw3000@0 {
+            compatible = "tinyuwb,dw3000";
+            reg = <0>;
+            spi-max-frequency = <8000000>;
+            reset-gpios  = <&gpio0 25 GPIO_ACTIVE_LOW>;
+            irq-gpios    = <&gpio1  2 GPIO_ACTIVE_HIGH>;
+            wakeup-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+compatible: "tinyuwb,dw3000"
+
+include: spi-device.yaml
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    required: true
+    description: RSTn line.
+
+  irq-gpios:
+    type: phandle-array
+    required: true
+    description: IRQ line.
+
+  wakeup-gpios:
+    type: phandle-array
+    required: true
+    description: WAKEUP line.
