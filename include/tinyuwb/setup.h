@@ -123,7 +123,7 @@ enum tu_hop_pref {
 struct tu_setup_caps {
 	uint8_t slot_bitmask;             /**< supported slot durations, one bit per NChap value */
 	uint32_t sync_code_index_bitmask; /**< usable SYNC code indices, bit i => code (i+1) */
-	uint8_t hopping_config_bitmask;   /**< supported hopping modes (FiRa bit layout) */
+	uint8_t hopping_config_bitmask;   /**< supported hopping modes, CCC encoding */
 	uint8_t channel_bitmask;          /**< b0 => ch5, b1 => ch9 */
 	uint16_t uwb_config_id;           /**< the one UWB configuration offered in M1 */
 	uint8_t pulse_shape_combo;        /**< the one pulse-shape combo offered in M1 */

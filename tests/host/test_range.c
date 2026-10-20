@@ -1,7 +1,7 @@
 /* SPDX-FileCopyrightText: 2026 Aseem Chopra */
 /* SPDX-License-Identifier: Apache-2.0 */
 
-/** @file test_range.c — range + URSK store (fira_session). */
+/** @file test_range.c — range + URSK store. */
 #include <string.h>
 
 #include "tinyuwb/kdf.h"

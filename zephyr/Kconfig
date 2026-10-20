@@ -8,7 +8,7 @@ config TINYUWB
 	depends on DT_HAS_TINYUWB_DW3000_ENABLED
 	help
 	  A register driver for the DW3000 family (the DW3110 in
-	  the DWM3001C) behind a 15-call radio contract, and the FiRa/CCC
+	  the DWM3001C) behind a 15-call radio contract, and the CCC
 	  responder engine that ranges with a phone's digital key: Pre-POLL,
 	  POLL, Response, Final, Final_Data, DS-TWR. The chip is the
 	  tinyuwb,dw3000 node on its SPI bus. AES comes from tinypsa's backend.

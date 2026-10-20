@@ -1,6 +1,6 @@
 # tinyuwb: Phase 0 research
 
-A DW3000-family driver and FiRa/CCC responder ranging engine for
+A DW3000-family driver and CCC responder ranging engine for
 tinylock, replacing ultrawidelock's vendored Qorvo driver and its UWB engine.
 Written 2026-10-18 from the sizes measured that day; nothing here is built
 yet.
@@ -11,7 +11,7 @@ yet.
 |---|---|
 | UWB today in ultrawidelock (release, LTO, measured 2026-10-18) | 35,094 B flash, 4,211 B RAM |
 | Of which the Qorvo driver and its glue | 22,139 B flash, 2,710 B RAM |
-| Of which the engine (CCC shim, FiRa session, DS-TWR, diagnostics) | 12,955 B flash, 1,501 B RAM |
+| Of which the engine (CCC shim, ranging session, DS-TWR, diagnostics) | 12,955 B flash, 1,501 B RAM |
 | Target | 8,000 B flash, 900 B RAM (driver 4,500 / 300, engine 3,500 / 600) |
 | Driver route | Register driver, one chip (DW3110), one channel at compile time, no function table, no thread |
 | Engine route | Pre-POLL, POLL, RESPONSE, FINAL_DATA as one state machine, STS key ladder on tinypsa AES-128-ECB, fixed-point DS-TWR, diagnostics off |
@@ -33,7 +33,7 @@ toward their caller.
 | `src/ccc/ccc_kdf.c`, `ccc_shim.c`, `cherry_ccc_shim.c`, `ccc_mac.c`, `ccc_crypto_prim.c` | 2,419 | 128 | Key ladder (mUPSK, UAD, SP0 decrypt 544 B), session bind, MAC header parse |
 | `src/driver/uwb_rxdiag.c` | 1,346 | 906 | Hard-coded under `CONFIG_ULTRAWIDELOCK_CRED`; ships in release |
 | `src/cred/ultrawidelock_uwb_msg*.c`, `_session.c`, `_adapter.c`, `facade/` | 1,956 | 73 | M1-M4 codec, per-session state, facade |
-| `src/driver/uwb_min.c`, `uwb_isr.c`, `fira/fira_session.c` | 110 | 79 | Bring-up, IRQ mask, URSK store |
+| `src/driver/uwb_min.c`, `uwb_isr.c`, the session store | 110 | 79 | Bring-up, IRQ mask, URSK store |
 | **engine side** | **12,955** | **1,501** | |
 | **UWB total** | **35,094** | **4,211** | |
 

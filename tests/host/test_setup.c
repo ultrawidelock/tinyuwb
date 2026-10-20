@@ -179,7 +179,7 @@ void test_setup(void)
 	caps.min_ran_multiplier = 8u;
 	caps.slot_bitmask = 0x01u;
 	caps.channel_bitmask = 0x01u;
-	caps.hopping_config_bitmask = 0x0Au;
+	caps.hopping_config_bitmask = 0x50u;
 	caps.sync_code_index_bitmask = 0x00000005u;
 	caps.hop_pref_count = 1u;
 	caps.hop_prefs[0] = TU_HOP_PREF_CONTINUOUS_DEFAULT;
@@ -486,7 +486,7 @@ void test_setup(void)
 	add_u8(&b, TU_RS_ATTR_HOPPING_CONFIGURATION_BITMASK, 0xFFu);
 	T_EQ("hop.unknown", feed(&b), TU_SETUP_EMALFORMED);
 	tu_setup_caps()->hop_prefs[0] = TU_HOP_PREF_CONTINUOUS_DEFAULT;
-	tu_setup_caps()->hopping_config_bitmask = 0x0Au;
+	tu_setup_caps()->hopping_config_bitmask = 0x50u;
 
 	t_group("suspend request: missing attributes + wrong state");
 	tu_setup_set_state(TU_SETUP_RANGING);

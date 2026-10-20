@@ -18,14 +18,12 @@
 /* The one protocol version, 1.0. */
 #define TU_RS_VERSION 0x0100u
 
-/* Hopping-capability bits while selecting a hopping config (FiRa layout; CCC is << 3). */
-#define HOP_CCC_TO_FIRA(v) ((uint8_t)((v) >> 3))
-#define HOP_FIRA_TO_CCC(v) ((uint8_t)((v) << 3))
-#define HOP_CAP_AES (1u << 0)
-#define HOP_CAP_DEFAULT (1u << 1)
-#define HOP_CAP_ADAPTIVE (1u << 2)
-#define HOP_CAP_CONTINUOUS (1u << 3)
-#define HOP_CAP_NO_HOPPING (1u << 4)
+/* Hopping-capability bits, in the CCC encoding. */
+#define HOP_CAP_AES (1u << 3)
+#define HOP_CAP_DEFAULT (1u << 4)
+#define HOP_CAP_ADAPTIVE (1u << 5)
+#define HOP_CAP_CONTINUOUS (1u << 6)
+#define HOP_CAP_NO_HOPPING (1u << 7)
 #define HOP_COMBO_CONTINUOUS_DEFAULT (HOP_CAP_CONTINUOUS | HOP_CAP_DEFAULT)
 #define HOP_COMBO_ADAPTIVE_DEFAULT (HOP_CAP_ADAPTIVE | HOP_CAP_DEFAULT)
 #define HOP_COMBO_NO_HOPPING (HOP_CAP_NO_HOPPING)
@@ -326,7 +324,7 @@ static enum tu_setup_err parse_slot_bitmask(uint8_t bitmask)
 
 static enum tu_setup_err parse_hopping(uint8_t peer)
 {
-	uint8_t common = HOP_CCC_TO_FIRA(peer) & s.caps.hopping_config_bitmask;
+	uint8_t common = peer & s.caps.hopping_config_bitmask;
 
 	/* The first preferred config both sides fully support. */
 	for (uint8_t i = 0u; i < s.caps.hop_pref_count; i++) {
@@ -347,7 +345,7 @@ static enum tu_setup_err parse_hopping(uint8_t peer)
 		}
 		if (combo != 0u && (common & combo) == combo) {
 			s.p.hopping_mode = s.caps.hop_prefs[i];
-			s.p.hopping_config_bitmask = HOP_FIRA_TO_CCC(combo);
+			s.p.hopping_config_bitmask = combo;
 			return TU_SETUP_OK;
 		}
 	}
