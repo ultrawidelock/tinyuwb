@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file hw.h — the radio the round engine drives: the whole driver contract.
  *
  * Implemented by the DW3000 driver on the target and by

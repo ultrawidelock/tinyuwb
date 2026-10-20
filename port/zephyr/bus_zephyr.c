@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file bus_zephyr.c — tinyuwb/bus.h on Zephyr: the SPI device and the three side-band
  * lines of a tinyuwb,dw3000 devicetree node, and the IRQ line into the system workqueue.
  *

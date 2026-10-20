@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file setup.c — the UWB Ranging Service: M1-M4, suspend/resume, notifications. */
 
 #include "tinyuwb/setup.h"

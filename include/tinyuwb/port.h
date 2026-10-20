@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file port.h — what the engine asks of the platform, beyond tinyuwb/aes.h. */
 
 #ifndef TINYUWB_PORT_H

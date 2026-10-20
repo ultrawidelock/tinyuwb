@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file main.c — driver suite entry: the register driver against the fake bus. The engine's
  * two upward calls are recorded here instead of linking round.c. */
 #include <stdio.h>

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file kdf.c — UWB key schedule + SP0 Pre-POLL frame codec. */
 
 #include "tinyuwb/kdf.h"

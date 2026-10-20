@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file bus_fake.c — a DW3000 on the host, see bus_fake.h. */
 #include "bus_fake.h"
 

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_round.c — one full DS-TWR round through the real engine: genuinely
  * CCM*-encrypted Pre-POLLs are decoded (bootstrap + stride learning + STS warm), the SP3
  * POLL window is armed off the warm, the POLL result fires the Response TX, TX-done arms

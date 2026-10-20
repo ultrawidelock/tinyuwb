@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_mac.c — MAC codec, ranging schedule, DS-TWR, URSK lifetime. */
 #include <errno.h>
 #include <string.h>

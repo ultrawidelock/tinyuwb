@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file bus.h — what the DW3000 register driver asks of the platform: raw SPI transfers,
  * the reset line, a microsecond delay and the interrupt line.
  *

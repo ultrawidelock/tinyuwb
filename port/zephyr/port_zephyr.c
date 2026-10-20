@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file port_zephyr.c — tinyuwb/aes.h and tinyuwb/port.h on Zephyr: the block cipher from
  * tinypsa's backend, the clock from the kernel. */
 

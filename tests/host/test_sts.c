@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_sts.c — STS substitution core: bind, per-index mapping, blob calibration. */
 #include <errno.h>
 #include <string.h>

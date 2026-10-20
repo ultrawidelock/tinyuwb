@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file port.c — host port: a monotonic clock for the range store's age. */
 
 #include "tinyuwb/port.h"

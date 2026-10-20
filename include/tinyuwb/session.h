@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file session.h — credential/CCC ranging seam: map a credential session's URSK + M1-M4
  * setup to tu_ran_params. */
 

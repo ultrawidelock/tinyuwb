@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file hw_fake.c — recording double for tinyuwb/hw.h. */
 #include "hw_fake.h"
 

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file hw_fake.h — recording double for tinyuwb/hw.h. Every call is counted and
  * sequenced so a test can assert the listen-gate semantics and the arm modes. */
 #ifndef TINYUWB_HW_FAKE_H

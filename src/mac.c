@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file mac.c — UWB MAC: hopping sequence, SP0 frame codec, ranging schedule. */
 
 #include <errno.h>

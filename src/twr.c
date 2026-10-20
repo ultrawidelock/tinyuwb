@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file twr.c — the double-sided two-way ranging estimator (implementation).
  */

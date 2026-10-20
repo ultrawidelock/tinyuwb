@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file bus_fake.h — a DW3000 on the host: decodes every SPI transaction into a register
  * image, logs it, and answers the few status bits the driver waits for. */
 #ifndef TINYUWB_BUS_FAKE_H

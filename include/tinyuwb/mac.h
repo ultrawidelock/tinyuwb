@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file mac.h — CCC UWB MAC layer: ranging-round scheduling, SP0 frame codec, DS-TWR. */
 
 #ifndef TU_MAC_H

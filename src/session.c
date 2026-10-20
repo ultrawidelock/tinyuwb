@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file session.c — credential/CCC ranging seam implementation. See session.h. */
 
 #include "tinyuwb/session.h"

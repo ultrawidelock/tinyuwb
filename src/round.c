@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file round.c — the responder's ranging round: Pre-POLL listen, SP3 POLL window,
  * delayed Response, Final window, Final_Data decode, DS-TWR, range latch.
  *

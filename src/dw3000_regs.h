@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file dw3000_regs.h — the register subset the driver touches, as (file, offset) pairs
  * and bit positions, as in the DW3000 Family User Manual version 1.1 (2019), chapter 8,
  * and its fast-command list, chapter 9.

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file dw3000.c — DW3000 register driver behind tinyuwb/hw.h.
  *
  * References: DW3000 Family User Manual 1.1 (register files, chapter 8; fast commands,

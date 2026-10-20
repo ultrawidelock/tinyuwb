@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_main.c — runs every suite; exit status is the verdict. */
 #include <stdio.h>
 

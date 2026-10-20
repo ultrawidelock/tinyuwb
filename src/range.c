@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file range.c — Range + URSK store for the CCC Pre-POLL responder. */
 
 #include <stdbool.h>

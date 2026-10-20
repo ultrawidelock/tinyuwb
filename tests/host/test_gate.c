@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_gate.c — the listen gate: stop kills every RX self-rearm path, start reopens
  * it, and the radio's last act on stop is the TRX off. The driver's callbacks are invoked
  * directly, playing the role of its interrupt work. */

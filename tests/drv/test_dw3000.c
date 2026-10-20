@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_dw3000.c — the register driver against the fake bus: every transaction the
  * manual prescribes, in the order it prescribes it, and every refusal. */
 #include <errno.h>

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_setup.c — the Ranging Service: M1/M3 builders, M2/M4 handling, suspend and
  * resume, notifications, and the radio start at M4. */
 #include <string.h>

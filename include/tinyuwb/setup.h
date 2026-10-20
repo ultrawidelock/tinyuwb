@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file setup.h — the UWB Ranging Service over BLE: M1-M4 session setup, suspend/resume
  * and notifications, driving the responder engine (tinyuwb/uwb.h).
  *

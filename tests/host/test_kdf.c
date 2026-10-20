@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_kdf.c — CCC key schedule + SP0 AES-CCM* + FIPS/RFC anchors. */
 #include <errno.h>
 #include <string.h>

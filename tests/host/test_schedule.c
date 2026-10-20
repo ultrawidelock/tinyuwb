@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file test_schedule.c — the ranging schedule an initiator publishes.
  *
  * The initiator's Pre-POLL announces a Poll_STS_Index, and the responder does not compute

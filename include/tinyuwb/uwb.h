@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /** @file uwb.h — tinyuwb's public API: the credential DS-TWR responder's lifecycle and the
  * range it measures. Everything above this header speaks these functions and never names
  * the radio. */

@@ -1,3 +1,6 @@
+/* SPDX-FileCopyrightText: 2026 Aseem Chopra */
+/* SPDX-License-Identifier: Apache-2.0 */
+
 /**
  * @file kdf.h
  * @brief UWB ranging key schedule + SP0 frame crypto .
