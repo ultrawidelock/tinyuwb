@@ -21,3 +21,6 @@ make size
 ```
 
 Apache-2.0
+
+Unofficial. Not affiliated with, endorsed or certified by any company or
+standards body named here. Trademarks belong to their owners.
